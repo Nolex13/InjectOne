@@ -25,8 +25,7 @@ describe('Injector', () => {
         }
         @Injectable()
         class Bar{
-            constructor(public readonly foo: Foo) {
-            }
+            constructor(public readonly foo: Foo) {}
             public uid = BAR_UID
         }
         const bar = Injector.resolve<Bar>(Bar);
@@ -37,7 +36,7 @@ describe('Injector', () => {
         expect(bar.foo.uid).toBe(FOO_UID);
     })
 
-    it('should instantiate a class with two dependency', () => {
+    it('should instantiate a class with two dependencies', () => {
         @Injectable()
         class Foo{
             public uid = FOO_UID
@@ -48,8 +47,7 @@ describe('Injector', () => {
         }
         @Injectable()
         class FooBar{
-            constructor(public readonly foo: Foo, public readonly bar: Bar) {
-            }
+            constructor(public readonly foo: Foo, public readonly bar: Bar) {}
             public uid = FOOBAR_UID
         }
         const fooBar = Injector.resolve<FooBar>(FooBar);
@@ -60,5 +58,31 @@ describe('Injector', () => {
         expect(fooBar.foo.uid).toBe(FOO_UID);
         expect(fooBar.bar).not.toBeUndefined();
         expect(fooBar.bar.uid).toBe(BAR_UID);
+    })
+
+    it('should instantiate a class with nested dependencies', () => {
+        @Injectable()
+        class Foo{
+            public uid = FOO_UID
+        }
+        @Injectable()
+        class Bar{
+            constructor(public readonly foo: Foo) {}
+            public uid = BAR_UID
+        }
+        @Injectable()
+        class FooBar{
+            constructor(public readonly bar: Bar) {
+            }
+            public uid = FOOBAR_UID
+        }
+        const fooBar = Injector.resolve<FooBar>(FooBar);
+
+        expect(fooBar).not.toBeUndefined();
+        expect(fooBar.uid).toBe(FOOBAR_UID);
+        expect(fooBar.bar).not.toBeUndefined();
+        expect(fooBar.bar.uid).toBe(BAR_UID);
+        expect(fooBar.bar.foo).not.toBeUndefined();
+        expect(fooBar.bar.foo.uid).toBe(FOO_UID);
     })
 })
