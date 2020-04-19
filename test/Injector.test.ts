@@ -1,0 +1,64 @@
+/* tslint:disable:max-classes-per-file */
+import {Injector} from '../src/Injector';
+import {Injectable} from '../src/Injectable';
+
+describe('Injector', () => {
+    const FOO_UID = 'foo';
+    const BAR_UID = 'bar';
+    const FOOBAR_UID = 'foot-bar';
+
+    it('should instantiate a class with no dependency', () => {
+        @Injectable()
+        class Foo{
+            public uid = FOO_UID
+        }
+
+        const foo = Injector.resolve<Foo>(Foo);
+
+        expect(foo).not.toBeUndefined();
+        expect(foo.uid).toBe(FOO_UID);
+    })
+    it('should instantiate a class with a dependency', () => {
+        @Injectable()
+        class Foo{
+            public uid = FOO_UID
+        }
+        @Injectable()
+        class Bar{
+            constructor(public readonly foo: Foo) {
+            }
+            public uid = BAR_UID
+        }
+        const bar = Injector.resolve<Bar>(Bar);
+
+        expect(bar).not.toBeUndefined();
+        expect(bar.uid).toBe(BAR_UID);
+        expect(bar.foo).not.toBeUndefined();
+        expect(bar.foo.uid).toBe(FOO_UID);
+    })
+
+    it('should instantiate a class with two dependency', () => {
+        @Injectable()
+        class Foo{
+            public uid = FOO_UID
+        }
+        @Injectable()
+        class Bar{
+            public uid = BAR_UID
+        }
+        @Injectable()
+        class FooBar{
+            constructor(public readonly foo: Foo, public readonly bar: Bar) {
+            }
+            public uid = FOOBAR_UID
+        }
+        const fooBar = Injector.resolve<FooBar>(FooBar);
+
+        expect(fooBar).not.toBeUndefined();
+        expect(fooBar.uid).toBe(FOOBAR_UID);
+        expect(fooBar.foo).not.toBeUndefined();
+        expect(fooBar.foo.uid).toBe(FOO_UID);
+        expect(fooBar.bar).not.toBeUndefined();
+        expect(fooBar.bar.uid).toBe(BAR_UID);
+    })
+})
