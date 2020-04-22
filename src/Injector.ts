@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import {DIContainer, DIContainerClass} from './DIContainer';
 
 export type TypedClass<T> = new(...args: any[]) => T;
 
@@ -7,7 +8,10 @@ class InjectorClass{
         const args = Reflect.getMetadata('design:paramtypes', Type) || [];
         const injections = args.map((token: TypedClass<object>) => this.resolve<object>(token));
 
-        return new Type(...injections);
+        if(!DIContainer.isAlreadyInstanced(Type)){
+            DIContainer.bind(Type, new Type(...injections));
+        }
+        return DIContainer.getInstance(Type);
     }
 }
 

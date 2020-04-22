@@ -1,5 +1,3 @@
-const world = '🗺️';
-
-export function hello(word: string = world): string {
-    return `Hello ${world} `;
-}
+export { DIContainer } from './DIContainer';
+export { Injector } from './Injector';
+export { Injectable } from './Injectable';
