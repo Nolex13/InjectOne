@@ -1,8 +1,9 @@
 {
-  "name": "dependency-injection",
+  "name": "injectione",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "tsc --watch",
     "test": "tsc"
