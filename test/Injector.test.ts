@@ -2,6 +2,7 @@
 import {Injector} from '../src/Injector';
 import {Injectable} from '../src/Injectable';
 import {DIContainer} from '../src/DIContainer';
+import {InjectableParam} from '../src/InjectableParam';
 
 describe('Injector', () => {
     const FOO_UID = 'foo';
@@ -118,5 +119,20 @@ describe('Injector', () => {
         expect(fooBar.bar.foo).not.toBeUndefined();
         expect(fooBar.bar.foo.uid).toBe(FOO_UID);
         expect(Foo.counter).toBe(1);
+    })
+
+    it('Inject a single param', () => {
+        @Injectable()
+        class Foo{
+            constructor(public readonly param1: string, @InjectableParam('param2') public readonly param2: string) {
+            }
+            public uid = FOO_UID
+        }
+        const foo = new Foo('param1', 'param2');
+
+        expect(foo).not.toBeUndefined();
+        expect(foo.uid).toBe(FOO_UID);
+        expect(foo.param1).toBe('param1');
+        expect(foo.param2).toBe('param1');
     })
 })
